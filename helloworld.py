@@ -96,8 +96,7 @@ while(True):
 
 
     #Open ftp connection
-    ftp = ftplib.FTP(NAO_IP, 'nao',
-    'admin')
+    ftp = ftplib.FTP(NAO_IP, 'nao', 'admin')
     #Get the test.wav file
     testFile = open(LOCAL_AUDIO_FILE, "wb")
     ftp.retrbinary('RETR recordings/microphones/test.wav', testFile.write)
