@@ -4,7 +4,7 @@ import time
 import ftplib
 
 from wit import Wit
-client = Wit(access_token="YOUR ACCESS TOKEN")
+client = Wit(access_token="YOUR ACCESS TOKEN HERE")
 
 from os import path
 
@@ -16,9 +16,11 @@ def act_on_response(resp):
     spoken_text = resp['_text']
 
     max_part_confidence = None
-    max_part_value = None
+    max_part_value = None   # arm, leg, torso
     max_direction_confidence = None
-    max_direction_value = None
+    max_direction_value = None # left, right, up, down
+    max_intent_confidence = None
+    max_intent_value = None #
 
     if 'direction' in resp['entities'].keys():
         direction = resp['entities']['direction']
@@ -42,24 +44,25 @@ def act_on_response(resp):
             max_intent_confidence = items['confidence']
             max_intent_value = items['value']
 
-    if max_intent_value == "move":
-        if max_part_value == "arm":
-            tts.say("You said " + str(resp['_text']) + ". I understood that you want me to " + str(max_intent_value) + " my " + str(max_part_value) + " in the " + str(max_direction_value) + " direction. My learning model reported a confidence of " + str(int(max_intent_confidence * 100)) + "percent for movement, " + str(int(max_part_confidence * 100)) + " percent for part and " + str(int(max_direction_confidence * 100)) + " percent for direction")
+    if max_intent_value == "perform":
+        if current_mode == "Perform Mode":
+            tts.say("I am already in perform mode!")
         else:
-            tts.say("You said " + str(resp['_text']) + ". I understood that you want me to " + str(max_intent_value) + " in the " + str(max_direction_value) + " direction. My learning model reported a confidence of " + str(int(max_intent_confidence * 100)) + "percent for movement and " + str(int(max_direction_confidence * 100)) + " percent for direction")
+            current_mode = "Perform Mode"
+            tts.say("Switching to perform mode!")
+
+        if max_part_value == "arm":
+            tts.say("You said " + str(resp['_text']) + ". I understood that you want me to " + str(max_intent_value) + " an action with my " + str(max_direction_value) + str(max_part_value) + ".")
+            tts.say(" My learning model reported a confidence of " + str(int(max_intent_confidence * 100)) + "percent for perform, " + str(int(max_part_confidence * 100)) + " percent for arm and " + str(int(max_direction_confidence * 100)) + " percent for direction")
+        else:
+            tts.say("done")
+
     elif max_intent_value == "learn":
         if current_mode == "Learn Mode":
             tts.say("I am already in learn mode")
         else:
             current_mode = "Learn Mode"
             tts.say("You said" + str(resp['_text']) + ". I understand that you want me to " + str(max_intent_value) + ". I have switched to my learn mode now.")
-            tts.say("My learning model reported a confidence of " + str(int(max_intent_confidence * 100)) + " percent for " +  str(max_intent_value))
-    elif max_intent_value == "perform":
-        if current_mode == "Perform Mode":
-            tts.say("I am already in perform mode")
-        else:
-            current_mode = "Perform Mode"
-            tts.say("You said" + str(resp['_text']) + ". I understand that you want me to " + str(max_intent_value) + ". I have switched to my perform mode now.")
             tts.say("My learning model reported a confidence of " + str(int(max_intent_confidence * 100)) + " percent for " +  str(max_intent_value))
 
 AUDIO_FILE = path.join(path.dirname(path.realpath(__file__)), "english.wav")
@@ -79,17 +82,17 @@ audio_recorder = ALProxy("ALAudioRecorder", NAO_IP, 9559)
 channels = [0, 0, 1, 0] #[left, right, front, rear]
 
 while(True):
-    print("Hit any key to begin recording!")
+    print("Hit ENTER to begin recording!")
     wait = raw_input()
     audio_recorder.startMicrophonesRecording(NAO_AUDIO_FILE, "wav", 16000, channels)
     #tts.say(str(transcription))
     # time.sleep(5)
-    print("Hit any key to stop recording!")
+    print("Hit ENTER to stop recording!")
     wait = raw_input()
     #motion.wait(move_id, 0)
     #tts.say("Hello world")
     audio_recorder.stopMicrophonesRecording()
-    print("stopped recording")
+    # print("stopped recording")
 
 
     #Open ftp connection
