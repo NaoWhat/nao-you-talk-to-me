@@ -1,17 +1,17 @@
 # nao-you-talk-to-me
 
 
-##GUIDE:
+## GUIDE:
 
 
-####Issuing a Command
+#### Issuing a Command
 To issue the Nao a command:   
 
 1. Press ENTER to start recording a command  
 2. Press ENTER to stop recording  
 3. Wait for the Nao to respond  
 
-####Modes 
+#### Modes 
 There are 2 modes: 
  
 1. Learning mode   
@@ -19,7 +19,7 @@ There are 2 modes:
 
   
 
-####Switching between modes
+#### Switching between modes
 You can tell the Nao to switch between modes
 
 * Ex)  "Can you switch to learn mode?"  
