@@ -27,7 +27,7 @@ You can tell the Nao to switch between modes
 * Ex)  "Will you learn something now?"  
 
 ### Teaching a movement
-In learn mode:  
+First switch to learn mode, then:  
 
 1. Press the ENTER key to begin demonstrating a movement to the Nao.   
 2. Step in front the Kinect and begin performing the movement.  
