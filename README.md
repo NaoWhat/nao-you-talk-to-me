@@ -4,14 +4,14 @@
 ## GUIDE:
 
 
-#### Issuing a Command
+### Issuing a Command
 To issue the Nao a command:   
 
 1. Press ENTER to start recording a command  
 2. Press ENTER to stop recording  
 3. Wait for the Nao to respond  
 
-#### Modes 
+### Modes 
 There are 2 modes: 
  
 1. Learning mode   
@@ -19,14 +19,14 @@ There are 2 modes:
 
   
 
-#### Switching between modes
+### Switching between modes
 You can tell the Nao to switch between modes
 
 * Ex)  "Can you switch to learn mode?"  
 * Ex)  "Will you perform something?"  
 * Ex)  "Will you learn something now?"  
 
-#### Teaching a movement
+### Teaching a movement
 In learn mode:  
 
 1. Press the ENTER key to begin demonstrating a movement to the Nao.   
@@ -34,7 +34,7 @@ In learn mode:
 3. After you are done, press ENTER to stop recording.
 
 
-#### Performing a learned movement
+### Performing a learned movement
 
 After teaching a movement, next tell the Nao to perform the action.
 
