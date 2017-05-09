@@ -136,7 +136,7 @@ class NaoArmController():
         effectorList = []
         pathList     = []
 
-        axisMaskList = [motion.AXIS_MASK_VEL, motion.AXIS_MASK_VEL]
+        axisMaskList = []
         timeList     = []         # seconds
 
         rarm_pathList = []
@@ -178,8 +178,20 @@ class NaoArmController():
                 rarm_pathList.append(target)
                 rarm_timeList.append(timestamp)
 
-        timeList = [rarm_timeList, larm_timeList]
-        pathList = [rarm_pathList, larm_pathList]
+        if rarm_pathList != [] and larm_pathList != []:
+            timeList = [rarm_timeList, larm_timeList]
+            pathList = [rarm_pathList, larm_pathList]
+            axisMaskList = [motion.AXIS_MASK_VEL, motion.AXIS_MASK_VEL]
+        elif rarm_pathList != []:
+            timeList = rarm_timeList
+            pathList = rarm_pathList
+            axisMaskList = [motion.AXIS_MASK_VEL]
+        elif larm_pathList != []:
+            timeList = larm_timeList
+            pathList = larm_pathList
+            axisMaskList = [motion.AXIS_MASK_VEL]
+
+        print(timeList)
         self.motion_service.positionInterpolations(effectorList, frame, pathList,
                                      axisMaskList, timeList)
 

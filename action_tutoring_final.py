@@ -123,11 +123,11 @@ class ActionTutor(object):
 
 
     def check_kinect(self):
-        print("hi from loop")
-        if self.kinect.has_new_body_frame() and self.isRecordingAction:
-            bodies = self.kinect.get_last_body_frame()
-            self.post_kinect_frame(bodies)
-            time.sleep(.1)
+        while True:
+            if self.kinect.has_new_body_frame() and self.isRecordingAction:
+                bodies = self.kinect.get_last_body_frame()
+                self.post_kinect_frame(bodies)
+                time.sleep(.1)
 
 
     def run(self):
@@ -179,9 +179,14 @@ class ActionTutor(object):
         max_intent_confidence = None
         max_intent_value = None #
 
+
+        if not resp.has_key('entities'):
+            self.tts.say('I didn\'t quite get that')
+
         if 'intent' in resp['entities'].keys():
             intent = resp['entities']['intent']
-
+        else:
+            intent = []
         if 'direction' in resp['entities'].keys():
             direction = resp['entities']['direction']
             max_direction_confidence = 0.0
@@ -213,7 +218,7 @@ class ActionTutor(object):
 
             if max_part_value == "arm":
                 self.tts.say("You said " + str(resp['_text']) + ". I understood that you want me to " + str(max_intent_value) + " an action with my " + str(max_direction_value) + str(max_part_value) + ".")
-                self.tts.say(" My learning model reported a confidence of " + str(int(max_intent_confidence * 100)) + "percent for perform, " + str(int(max_part_confidence * 100)) + " percent for arm and " + str(int(max_direction_confidence * 100)) + " percent for direction")
+                #self.tts.say(" My learning model reported a confidence of " + str(int(max_intent_confidence * 100)) + "percent for perform, " + str(int(max_part_confidence * 100)) + " percent for arm and " + str(int(max_direction_confidence * 100)) + " percent for direction")
 
                 self.perform_action()
             else:
@@ -225,7 +230,7 @@ class ActionTutor(object):
             else:
                 self.current_mode = "Learn Mode"
                 self.tts.say("You said" + str(resp['_text']) + ". I understand that you want me to " + str(max_intent_value) + ". I have switched to my learn mode now.")
-                self.tts.say("My learning model reported a confidence of " + str(int(max_intent_confidence * 100)) + " percent for " +  str(max_intent_value))
+                #self.tts.say("My learning model reported a confidence of " + str(int(max_intent_confidence * 100)) + " percent for " +  str(max_intent_value))
                 print("LEARN MODE: \t Press ENTER to start learning...")
                 wait = raw_input()
                 self.tts.say("Learning now!")
@@ -238,6 +243,7 @@ class ActionTutor(object):
 
                 # Save Action now...
                 self.save_action()
+
 
     def post_kinect_frame(self, bodies):
         """Get skeleton events from the Kinect device and post them into the PyGame
@@ -263,6 +269,8 @@ class ActionTutor(object):
                     nao_left_arm = calculate_nao_left_arm_coords(human_spinemid, human_lefthand)
                     if self.use_safety_bounds:
 
+                        if self.isRecordingAction and self.start_time == -1:
+                                    self.start_time = time.time() #initialize start_time
 
                         ###check right arm
                         rarm_is_in_bounds = is_point_in_hull(list(nao_right_arm), self.rarm_points)
@@ -296,7 +304,8 @@ class ActionTutor(object):
 
     def append_to_current_move(self, joint_name, position):
         if self.currentMove.has_key('RArm'):
-            self.currentMove[joint_name] = self.currentMove[joint_name].append(position)
+            print(self.currentMove['RArm'])
+            self.currentMove[joint_name].append(position)
         else:
             self.currentMove[joint_name] = [position]
 
@@ -307,7 +316,7 @@ class ActionTutor(object):
 
     def start_recording(self):
         self.isRecordingAction = True
-        self.start_time = time.time()
+        self.start_time = -1
 
     def perform_action(self):
         self.arm_controller.performAction(self.moveDictionary)
